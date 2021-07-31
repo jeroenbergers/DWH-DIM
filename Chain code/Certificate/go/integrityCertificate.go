@@ -3,8 +3,6 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"strconv"
-
 	"github.com/hyperledger/fabric-chaincode-go/shim"
 	sc "github.com/hyperledger/fabric-protos-go/peer"
 	"github.com/hyperledger/fabric/common/flogging"
@@ -39,8 +37,6 @@ func (s *SmartContract) Invoke(APIstub shim.ChaincodeStubInterface) sc.Response 
 	switch function {
 	case "queryById":
 		return s.queryById(APIstub, args)
-	case "initLedger":
-		return s.initLedger(APIstub)
 	case "createRecord":
 		return s.createRecord(APIstub, args)
 	default:
@@ -61,7 +57,7 @@ func (s *SmartContract) createRecord(APIstub shim.ChaincodeStubInterface, args [
 	RecordAsBytes, _ := json.Marshal(rec)
 	APIstub.PutState(args[0], RecordAsBytes)
 
-	indexName := "owner~key"
+	indexName := "key"
 	colorNameIndexKey, err := APIstub.CreateCompositeKey(indexName, []string{rec.Organisation, args[0]})
 	if err != nil {
 		return shim.Error(err.Error())
